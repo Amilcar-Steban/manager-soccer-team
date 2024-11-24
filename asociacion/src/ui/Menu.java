@@ -20,7 +20,10 @@ public class Menu {
                 4. Mostrar lista de jugadores
                 5. Mostrar lista de equipos
                 6. Eliminar jugador
-                7. Salir
+                7. Eliminar equipo
+                8. Seleccionar jugador
+                9. Seleccionar equipo
+                10. Salir
                 """);
     }
 
@@ -56,10 +59,13 @@ public class Menu {
                 case 4 -> {clear();Jugador.showPlayers(players);}
                 case 5 -> {clear();Equipo.showEquipos(teams);}
                 case 6 -> {clear();deletePlayer();}
-                case 7 -> {clear();System.out.println("Bye..");}
+                case 7 -> {clear();deleteTeam();}
+                case 8 -> {clear();deleteTeam();}
+                case 9 -> {clear();deleteTeam();}
+                case 10 -> {clear();System.out.println("Bye..");}
                 default -> System.out.println("Opcion incorrecta");
             }
-        } while (option!=7);
+        } while (option!=10);
     }
 
     public static void clear(){
@@ -156,10 +162,36 @@ public class Menu {
         }
 
         if (playerDeleted) {
-            System.out.println("Jugador Eliminado exitosamente!"); 
+            System.out.println("\nJugador Eliminado exitosamente!"); 
             Jugador.showPlayers(players);
         }else{
-            System.out.println("Jugador no encontrado"); 
+            System.out.println("\nJugador no encontrado"); 
+        }
+    }
+
+    public static void deleteTeam(){
+        Equipo.showEquipos(teams);
+        System.out.print("Id del equipo a eliminar: ");
+        while (!sc.hasNextInt()) {
+            System.out.println("Por favor, ingresa un número válido.");
+            sc.next(); // Descartar el input no válido
+        }
+        int data = sc.nextInt();
+        boolean playerDeleted = false;
+
+        for (int i = 0; i < teams.size(); i++) {
+            if (data == teams.get(i).getId()) {
+                teams.remove(i);
+                playerDeleted = true;
+                break;
+            }
+        }
+
+        if (playerDeleted) {
+            System.out.println("\nEquipo Eliminado exitosamente!"); 
+            Equipo.showEquipos(teams);
+        }else{
+            System.out.println("\nEquipo no encontrado"); 
         }
     }
 }
