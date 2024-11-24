@@ -12,13 +12,15 @@ public class Menu {
 
     public static void menu(){
         System.out.println("""
+
                 \tMenu
                 1. Crear jugador
                 2. Crear equipo
                 3. Asignar jugador a equipo
                 4. Mostrar lista de jugadores
                 5. Mostrar lista de equipos
-                6. Salir
+                6. Eliminar jugador
+                7. Salir
                 """);
     }
 
@@ -28,8 +30,8 @@ public class Menu {
             menu();
             option = sc.nextInt();
             switch (option) {
-                case 1 -> createPlayer();
-                case 2 -> createTeam();
+                case 1 -> {clear();createPlayer();}
+                case 2 -> {clear();createTeam();}
                 case 3 -> {
                     clear();
                     Jugador.showPlayers(players);
@@ -53,10 +55,11 @@ public class Menu {
                 }
                 case 4 -> {clear();Jugador.showPlayers(players);}
                 case 5 -> {clear();Equipo.showEquipos(teams);}
-                case 6 -> {clear();System.out.println("Bye..");}
+                case 6 -> {clear();deletePlayer();}
+                case 7 -> {clear();System.out.println("Bye..");}
                 default -> System.out.println("Opcion incorrecta");
             }
-        } while (option!=6);
+        } while (option!=7);
     }
 
     public static void clear(){
@@ -65,11 +68,17 @@ public class Menu {
     }
 
     public static void init(){
+        //Informacion de prueba
         clear();
         Equipo team1 = new Equipo("Real Madrid");
         teams.add(team1);
         Equipo team2 = new Equipo("Barcelona");
         teams.add(team2);
+
+        Jugador player1 = new Jugador("Amilcar Rodriguez", team1);
+        players.add(player1);
+        Jugador player2 = new Jugador("Cristiano Ronaldo", team2);
+        players.add(player2);
         options();
         
     }
@@ -79,7 +88,6 @@ public class Menu {
     }
 
     public static void createTeam(){
-        clear();
         Equipo newTeam = new Equipo();
         System.out.print("Nombre del equipo: ");
         String nameTeam = sc.next();
@@ -92,7 +100,6 @@ public class Menu {
     }
 
     public static void createPlayer(){
-        clear();
         Jugador newPlayer = new Jugador();
         System.out.print("Nombre de jugador: ");
         sc.nextLine(); 
@@ -127,6 +134,32 @@ public class Menu {
             players.add(newPlayer);
             clear();
             Jugador.showPlayers(players);
+        }
+    }
+
+    public static void deletePlayer(){
+        Jugador.showPlayers(players);
+        System.out.print("Id de jugador a eliminar: ");
+        while (!sc.hasNextInt()) {
+            System.out.println("Por favor, ingresa un número válido.");
+            sc.next(); // Descartar el input no válido
+        }
+        int data = sc.nextInt();
+        boolean playerDeleted = false;
+
+        for (int i = 0; i < players.size(); i++) {
+            if (data == players.get(i).getId()) {
+                players.remove(i);
+                playerDeleted = true;
+                break;
+            }
+        }
+
+        if (playerDeleted) {
+            System.out.println("Jugador Eliminado exitosamente!"); 
+            Jugador.showPlayers(players);
+        }else{
+            System.out.println("Jugador no encontrado"); 
         }
     }
 }
