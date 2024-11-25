@@ -12,13 +12,18 @@ public class Menu {
 
     public static void menu(){
         System.out.println("""
+
                 \tMenu
                 1. Crear jugador
                 2. Crear equipo
                 3. Asignar jugador a equipo
                 4. Mostrar lista de jugadores
                 5. Mostrar lista de equipos
-                6. Salir
+                6. Eliminar jugador
+                7. Eliminar equipo
+                8. Seleccionar jugador
+                9. Seleccionar equipo
+                10. Salir
                 """);
     }
 
@@ -28,8 +33,8 @@ public class Menu {
             menu();
             option = sc.nextInt();
             switch (option) {
-                case 1 -> createPlayer();
-                case 2 -> createTeam();
+                case 1 -> {clear();createPlayer();}
+                case 2 -> {clear();createTeam();}
                 case 3 -> {
                     clear();
                     Jugador.showPlayers(players);
@@ -53,10 +58,14 @@ public class Menu {
                 }
                 case 4 -> {clear();Jugador.showPlayers(players);}
                 case 5 -> {clear();Equipo.showEquipos(teams);}
-                case 6 -> {clear();System.out.println("Bye..");}
+                case 6 -> {clear();deletePlayer();}
+                case 7 -> {clear();deleteTeam();}
+                case 8 -> {clear();selectPlayer();}
+                case 9 -> {clear();selectTeam();}
+                case 10 -> {clear();System.out.println("Bye..");}
                 default -> System.out.println("Opcion incorrecta");
             }
-        } while (option!=6);
+        } while (option!=10);
     }
 
     public static void clear(){
@@ -65,11 +74,17 @@ public class Menu {
     }
 
     public static void init(){
+        //Informacion de prueba
         clear();
         Equipo team1 = new Equipo("Real Madrid");
         teams.add(team1);
         Equipo team2 = new Equipo("Barcelona");
         teams.add(team2);
+
+        Jugador player1 = new Jugador("Amilcar Rodriguez", team1);
+        players.add(player1);
+        Jugador player2 = new Jugador("Cristiano Ronaldo", team2);
+        players.add(player2);
         options();
         
     }
@@ -79,7 +94,6 @@ public class Menu {
     }
 
     public static void createTeam(){
-        clear();
         Equipo newTeam = new Equipo();
         System.out.print("Nombre del equipo: ");
         String nameTeam = sc.next();
@@ -92,7 +106,6 @@ public class Menu {
     }
 
     public static void createPlayer(){
-        clear();
         Jugador newPlayer = new Jugador();
         System.out.print("Nombre de jugador: ");
         sc.nextLine(); 
@@ -128,5 +141,204 @@ public class Menu {
             clear();
             Jugador.showPlayers(players);
         }
+    }
+
+    public static void deletePlayer(){
+        Jugador.showPlayers(players);
+        System.out.print("Id de jugador a eliminar: ");
+        while (!sc.hasNextInt()) {
+            System.out.println("Por favor, ingresa un número válido.");
+            sc.next(); // Descartar el input no válido
+        }
+        int data = sc.nextInt();
+        boolean playerDeleted = false;
+
+        for (int i = 0; i < players.size(); i++) {
+            if (data == players.get(i).getId()) {
+                players.remove(i);
+                playerDeleted = true;
+                break;
+            }
+        }
+
+        if (playerDeleted) {
+            System.out.println("\nJugador Eliminado exitosamente!"); 
+            Jugador.showPlayers(players);
+        }else{
+            System.out.println("\nJugador no encontrado"); 
+        }
+    }
+
+    public static void deleteTeam(){
+        Equipo.showEquipos(teams);
+        System.out.print("Id del equipo a eliminar: ");
+        while (!sc.hasNextInt()) {
+            System.out.println("Por favor, ingresa un número válido.");
+            sc.next(); // Descartar el input no válido
+        }
+        int data = sc.nextInt();
+        boolean playerDeleted = false;
+
+        for (int i = 0; i < teams.size(); i++) {
+            if (data == teams.get(i).getId()) {
+                teams.remove(i);
+                playerDeleted = true;
+                break;
+            }
+        }
+
+        if (playerDeleted) {
+            System.out.println("\nEquipo Eliminado exitosamente!"); 
+            Equipo.showEquipos(teams);
+        }else{
+            System.out.println("\nEquipo no encontrado"); 
+        }
+    }
+
+    public static void selectPlayer(){
+        Jugador.showPlayers(players);
+        System.out.print("Id de jugador: ");
+        while (!sc.hasNextInt()) {
+            System.out.println("Por favor, ingresa un número válido.");
+            sc.next(); // Descartar el input no válido
+        }
+        int playerID = sc.nextInt();
+
+        if (Jugador.findById(playerID, players)!=null) {
+            menuSelect("player");
+            while (!sc.hasNextInt()) {
+                System.out.println("Por favor, ingresa un número válido.");
+                sc.next(); // Descartar el input no válido
+            }
+            int data = sc.nextInt();
+
+            switch (data) {
+                case 1 -> {
+                    clear();
+                    Jugador.showPlayers(Jugador.findById(playerID, players));
+                }
+                case 2 -> {
+                    clear();
+                    System.out.println("\nIngrese el nombre: ");
+                    sc.nextLine(); 
+                    String name = sc.nextLine();
+                    Jugador.findById(playerID, players).setName(name);
+                    System.out.println("\nSe ha actualizado el nombre del jugador.");
+                    Jugador.showPlayers(players);
+                }
+
+                case 3 -> {
+                    clear();
+                    Equipo.showEquipos(teams);
+                    System.out.print("Id de Equipo: ");
+                    while (!sc.hasNextInt()) {
+                        System.out.println("Por favor, ingresa un número válido.");
+                        sc.next(); // Descartar el input no válido
+                    }
+                    int teamID = sc.nextInt();
+                    
+                    if (Equipo.findById(teamID, teams)!=null) {
+                        Jugador.findById(playerID, players).setTeam(Equipo.findById(teamID, teams));
+                        System.out.println("\nSe ha actualizado el equipo del jugador.");
+                        Jugador.showPlayers(players);
+                    }
+                    
+                }
+                case 4 -> {clear();System.out.println("Bye..\n");}
+                default -> System.out.println("Opcion incorrecta");
+            }
+        }
+    }
+
+    public static void selectTeam(){
+        Equipo.showEquipos(teams);
+        System.out.print("Id del Equipo: ");
+        while (!sc.hasNextInt()) {
+            System.out.println("Por favor, ingresa un número válido.");
+            sc.next(); // Descartar el input no válido
+        }
+        int teamID = sc.nextInt();
+
+        if (Equipo.findById(teamID, teams)!=null) {
+            menuSelect("team");
+            while (!sc.hasNextInt()) {
+                System.out.println("Por favor, ingresa un número válido.");
+                sc.next(); // Descartar el input no válido
+            }
+            int data = sc.nextInt();
+
+            switch (data) {
+                case 1 -> {
+                    clear();
+                    Equipo.showEquipos(Equipo.findById(teamID, teams));
+                }
+                case 2 -> {
+                    clear();
+                    System.out.println("\nIngrese el nombre: ");
+                    sc.nextLine(); 
+                    String name = sc.nextLine();
+                    Equipo.findById(teamID, teams).setName(name);
+                    System.out.println("\nSe ha actualizado el nombre del equipo.");
+                    Equipo.showEquipos(teams);
+                }
+
+                case 3 -> {
+                    clear();
+                    Jugador.showPlayers(players);
+                    System.out.print("Id del jugador: ");
+                    while (!sc.hasNextInt()) {
+                        System.out.println("Por favor, ingresa un número válido.");
+                        sc.next(); // Descartar el input no válido
+                    }
+                    int playerID = sc.nextInt();
+                    
+                    if (Jugador.findById(playerID, players)!=null) {
+                        Jugador.findById(playerID, players).setTeam(Equipo.findById(teamID, teams));
+                        System.out.println("\nEl jugador se ha agregado al equipo correctamente");
+                        Jugador.showPlayers(players);
+                    }
+                    
+                }
+                case 4 -> {
+                    clear();
+                    ArrayList<Jugador> resultPlayers = new ArrayList<>(); 
+                    for (Jugador jugador : players) {
+                        if (jugador.getTeam().equals(Equipo.findById(teamID, teams))) {
+                            resultPlayers.add(jugador);
+                        }
+                    }
+                    Jugador.showPlayers(resultPlayers);
+                    
+                }
+                case 5 -> {clear();System.out.println("Bye..\n");}
+                default -> System.out.println("Opcion incorrecta");
+            }
+        }
+    }
+
+    public static void menuSelect(String op){
+        if (op.equalsIgnoreCase("team")) {
+            System.out.println("""
+
+                \tMenu Jugador
+                1. Ver detalles
+                2. Cambiar nombre
+                3. Agregar jugador al equipo
+                4. Mostrar jugadores del equipo
+                5. Regresar al menu anterior
+
+                """);
+        }else{
+            System.out.println("""
+
+                \tMenu Equipo 
+                1. Ver detalles
+                2. Cambiar nombre
+                3. Cambiar equipo
+                4. Regresar al menu anterior
+
+                """);
+        }
+        
     }
 }
