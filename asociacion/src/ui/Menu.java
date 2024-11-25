@@ -60,49 +60,7 @@ public class Menu {
                 case 5 -> {clear();Equipo.showEquipos(teams);}
                 case 6 -> {clear();deletePlayer();}
                 case 7 -> {clear();deleteTeam();}
-                case 8 -> {
-                    clear();
-
-                    Jugador.showPlayers(players);
-                    System.out.print("Id de jugador: ");
-                    while (!sc.hasNextInt()) {
-                        System.out.println("Por favor, ingresa un número válido.");
-                        sc.next(); // Descartar el input no válido
-                    }
-                    int playerID = sc.nextInt();
-
-                    if (Jugador.findById(playerID, players)!=null) {
-                        menuSelect("player");
-                        while (!sc.hasNextInt()) {
-                            System.out.println("Por favor, ingresa un número válido.");
-                            sc.next(); // Descartar el input no válido
-                        }
-                        int data = sc.nextInt();
-
-                        switch (data) {
-                            case 1 -> {
-                                clear();
-                                Jugador.showPlayers(Jugador.findById(playerID, players));
-                            }
-                            case 2 -> {
-                                clear();
-                                System.out.println("\nIngrese el nombre: ");
-                                sc.nextLine(); 
-                                String name = sc.nextLine();
-                                Jugador.findById(playerID, players).setName(name);
-                                System.out.println("\nSe ha actualizado el nombre del jugador.");
-                                Jugador.showPlayers(players);
-                            }
-
-                            case 3 -> {
-                                clear();System.out.println("Bye..");
-                            }
-                            case 4 -> {clear();System.out.println("Bye..");}
-                            default -> System.out.println("Opcion incorrecta");
-                        }
-                    }
-                    
-                }
+                case 8 -> {clear();selectPlayer();}
                 case 9 -> {
                     clear();menuSelect("team");
                 }
@@ -110,10 +68,6 @@ public class Menu {
                 default -> System.out.println("Opcion incorrecta");
             }
         } while (option!=10);
-    }
-
-    public static void setNamePlayer(int id){
-        
     }
 
     public static void clear(){
@@ -243,15 +197,59 @@ public class Menu {
         }
     }
 
-    public static Jugador selectPlayer(){
+    public static void selectPlayer(){
         Jugador.showPlayers(players);
         System.out.print("Id de jugador: ");
         while (!sc.hasNextInt()) {
             System.out.println("Por favor, ingresa un número válido.");
             sc.next(); // Descartar el input no válido
         }
-        int data = sc.nextInt();
-        return Jugador.findById(data, players);
+        int playerID = sc.nextInt();
+
+        if (Jugador.findById(playerID, players)!=null) {
+            menuSelect("player");
+            while (!sc.hasNextInt()) {
+                System.out.println("Por favor, ingresa un número válido.");
+                sc.next(); // Descartar el input no válido
+            }
+            int data = sc.nextInt();
+
+            switch (data) {
+                case 1 -> {
+                    clear();
+                    Jugador.showPlayers(Jugador.findById(playerID, players));
+                }
+                case 2 -> {
+                    clear();
+                    System.out.println("\nIngrese el nombre: ");
+                    sc.nextLine(); 
+                    String name = sc.nextLine();
+                    Jugador.findById(playerID, players).setName(name);
+                    System.out.println("\nSe ha actualizado el nombre del jugador.");
+                    Jugador.showPlayers(players);
+                }
+
+                case 3 -> {
+                    clear();
+                    Equipo.showEquipos(teams);
+                    System.out.print("Id de Equipo: ");
+                    while (!sc.hasNextInt()) {
+                        System.out.println("Por favor, ingresa un número válido.");
+                        sc.next(); // Descartar el input no válido
+                    }
+                    int teamID = sc.nextInt();
+                    
+                    if (Equipo.findById(teamID, teams)!=null) {
+                        Jugador.findById(playerID, players).setTeam(Equipo.findById(teamID, teams));
+                        System.out.println("\nSe ha actualizado el equipo del jugador.");
+                        Jugador.showPlayers(players);
+                    }
+                    
+                }
+                case 4 -> {clear();System.out.println("Bye..\n");}
+                default -> System.out.println("Opcion incorrecta");
+            }
+        }
     }
 
     public static void menuSelect(String op){
