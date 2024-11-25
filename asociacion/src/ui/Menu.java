@@ -60,8 +60,33 @@ public class Menu {
                 case 5 -> {clear();Equipo.showEquipos(teams);}
                 case 6 -> {clear();deletePlayer();}
                 case 7 -> {clear();deleteTeam();}
-                case 8 -> {clear();deleteTeam();}
-                case 9 -> {clear();deleteTeam();}
+                case 8 -> {
+                    clear();
+                    menuSelect("player");
+                    while (!sc.hasNextInt()) {
+                        System.out.println("Por favor, ingresa un número válido.");
+                        sc.next(); // Descartar el input no válido
+                    }
+                    int data = sc.nextInt();
+                    switch (data) {
+                        case 1 -> {
+                            clear();
+                            Jugador player = selectPlayer();
+                            Jugador.showPlayers(player);
+                        }
+                        case 2 -> {
+                            clear();System.out.println("Bye..");
+                        }
+                        case 3 -> {
+                            clear();System.out.println("Bye..");
+                        }
+                        case 4 -> {clear();System.out.println("Bye..");}
+                        default -> System.out.println("Opcion incorrecta");
+                    }
+                }
+                case 9 -> {
+                    clear();menuSelect("team");
+                }
                 case 10 -> {clear();System.out.println("Bye..");}
                 default -> System.out.println("Opcion incorrecta");
             }
@@ -193,5 +218,42 @@ public class Menu {
         }else{
             System.out.println("\nEquipo no encontrado"); 
         }
+    }
+
+    public static Jugador selectPlayer(){
+        Jugador.showPlayers(players);
+        System.out.print("Id de jugador: ");
+        while (!sc.hasNextInt()) {
+            System.out.println("Por favor, ingresa un número válido.");
+            sc.next(); // Descartar el input no válido
+        }
+        int data = sc.nextInt();
+        return Jugador.findById(data, players);
+    }
+
+    public static void menuSelect(String op){
+        if (op.equalsIgnoreCase("team")) {
+            System.out.println("""
+
+                \tMenu Jugador
+                1. Ver detalles
+                2. Cambiar nombre
+                3. Cambiar equipo
+                4. Mostrar jugadores del equipo
+                5. Regresar al menu anterior
+
+                """);
+        }else{
+            System.out.println("""
+
+                \tMenu Equipo 
+                1. Ver detalles
+                2. Cambiar nombre
+                3. Cambiar equipo
+                4. Regresar al menu anterior
+
+                """);
+        }
+        
     }
 }
